@@ -12,10 +12,16 @@ public class HWTask2 {
         orangeBox.addFruit(new Orange(34));
         System.out.println("Вес апельсинов " + orangeBox.getWeight() + " Вес яблок " + appleBox.getWeight());
         appleBox.compare(orangeBox);
+        
 
     }
 
-    public void moveFruit(Box<Orange> boxNew, Box<Orange> boxOld) {
+    public void moveApple(Box<Apple> boxNew, Box<Apple> boxOld) {
+        boxOld.getClass();
+        boxNew.addFruit(new Apple(boxOld.getQuality()));
+    }
+    public void moveOrange(Box<Orange> boxNew, Box<Orange> boxOld) {
+        boxOld.getClass();
         boxNew.addFruit(new Orange(boxOld.getQuality()));
     }
 }
