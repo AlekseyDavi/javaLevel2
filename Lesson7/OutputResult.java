@@ -1,6 +1,10 @@
 package Lesson7;
 
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,6 +17,17 @@ public class OutputResult {
         ObjectMapper objectMapper = new ObjectMapper();
         double minimumCelsius;
         double maximumCelsius;
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:geekbrains.db");
+            statement = connection.createStatement();
+            statement.executeQuery("create table if not exists temperatureArchive (id integer primary key autoincrement,town text,data text,temperatureMin text,temperatureMax text);");
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
 
         System.out.println(town);
         System.out.println();
@@ -27,9 +42,23 @@ public class OutputResult {
             String maximumResult = String.format("%.1f", maximumCelsius);
             System.out.println("Temperature: " + minimumResult + "\u2103 - " + maximumResult + "\u2103");
             System.out.println();
+            try {
+                String requestData = "INSERT INTO temperatureArchive ( data,temperatureMin,temperatureMax,town) values ('" + dateFormat.format(data.getTime())
+                        + "', '" + minimumCelsius
+                        + "', '" + maximumCelsius
+                        + "', '" + town + "');";
+
+                statement.executeUpdate(requestData);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         }
-        System.exit(0);
+        try {
+            if (connection != null)
+                connection.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
     }
-
-
 }

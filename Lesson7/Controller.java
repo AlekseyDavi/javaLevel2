@@ -1,22 +1,24 @@
 package Lesson7;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class Controller {
 
     AccuWeatherModel weatherModel = new AccuWeatherModel();
+    Archive archive=new Archive();
 
 
-    public void getWeather(int command, String selectedCity) throws IOException {
+    public void getWeather(int command, String selectedCity) throws IOException, SQLException {
         switch (command) {
             case (1):
-                weatherModel.getWeather(selectedCity, "1day", 1);
+                weatherModel.getWeather(selectedCity, 1);
                 break;
             case (2):
-                weatherModel.getWeather(selectedCity, "5day", 5);
+                weatherModel.getWeather(selectedCity, 5);
                 break;
             case (3):
-//TODO: архив
+                archive.outputResultArchive(selectedCity);
                 break;
             default:
                 System.out.println("Неверное значение даты");

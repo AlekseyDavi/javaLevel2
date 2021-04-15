@@ -44,7 +44,7 @@ public class AccuWeatherModel {
     }
 
 
-    public static void getWeather(String selectedCity, String countDay, int numberDay) throws IOException {
+    public static void getWeather(String selectedCity, int numberDay) throws IOException {
         String[] minimum = new String[numberDay];
         String[] maximum = new String[numberDay];
         String cityKey = detectCityKey(selectedCity);
@@ -54,7 +54,7 @@ public class AccuWeatherModel {
                 .addPathSegment(FORECASTS)
                 .addPathSegment(API_V1)
                 .addPathSegments(DAILY)
-                .addPathSegments(countDay)
+                .addPathSegments(numberDay + "day")
                 .addPathSegment(cityKey)
                 .addQueryParameter("apikey", API_KEY)
                 .build();
@@ -67,17 +67,20 @@ public class AccuWeatherModel {
 
         for (int i = 0; i < numberDay; i++) {
 
-
-            minimum[i] = objectMapper.readTree(responseString)
-                    .at("/DailyForecasts").get(i)
-                    .at("/Temperature")
-                    .at("/Minimum")
-                    .at("/Value").asText();
-            maximum[i] = objectMapper.readTree(responseString)
-                    .at("/DailyForecasts").get(i)
-                    .at("/Temperature")
-                    .at("/Maximum")
-                    .at("/Value").asText();
+            try {
+                minimum[i] = objectMapper.readTree(responseString)
+                        .at("/DailyForecasts").get(i)
+                        .at("/Temperature")
+                        .at("/Minimum")
+                        .at("/Value").asText();
+                maximum[i] = objectMapper.readTree(responseString)
+                        .at("/DailyForecasts").get(i)
+                        .at("/Temperature")
+                        .at("/Maximum")
+                        .at("/Value").asText();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         OutputResult.outputResult(minimum, maximum, numberDay, changeTown);
     }
